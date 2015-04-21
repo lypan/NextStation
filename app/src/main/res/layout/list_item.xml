@@ -49,7 +49,8 @@
             android:id="@+id/addlocation"
             android:layout_weight="0.2"
             android:textColor="#ffffffff"
-            android:gravity="center_vertical"
+            android:background="@drawable/selector"
+            android:gravity="center_vertical|center_horizontal"
             android:clickable="true" />
 
     </LinearLayout>

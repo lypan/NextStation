@@ -18,7 +18,6 @@ import java.util.ArrayList;
 
 
 public class PublicTransportationActivity extends ActionBarActivity {
-    private static final String EXCEPTIONTAG = "EXCEPTION OCCURS!";
     private ArrayList<LocationInformation> locationArray = new ArrayList<>();
     ListView listview;
 
@@ -33,7 +32,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
         try {
             jsonArray = new JSONArray(jsonString);
         } catch (JSONException e) {
-            Log.d(EXCEPTIONTAG, "JSON1");
+            Log.d(Constant.EXCEPTIONTAG, "JSON1");
         }
 
 //        fill the list view
@@ -41,7 +40,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
         try {
             dataLength = jsonArray.length();
         } catch (NullPointerException e) {
-            Log.d(EXCEPTIONTAG, "JSON2");
+            Log.d(Constant.EXCEPTIONTAG, "JSON2");
         } finally {
             if (dataLength != 0) {
                 for (int i = 0; i < dataLength; i++) {
@@ -52,7 +51,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
                         longitude = jsonArray.getJSONObject(i).getString("longitude");
                         Log.d("test", name);
                     } catch (JSONException e) {
-                        Log.d(EXCEPTIONTAG, "JSON2");
+                        Log.d(Constant.EXCEPTIONTAG, "JSON2");
                     }
                     locationArray.add(new LocationInformation(name, latitude, longitude));
                 }
@@ -89,7 +88,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private String parseJson(int resourceID) {
+    public String parseJson(int resourceID) {
         InputStream is = null;
         String result = null;
         try {
@@ -104,12 +103,12 @@ public class PublicTransportationActivity extends ActionBarActivity {
             }
             result = sb.toString();
         } catch (IOException e1) {
-            Log.d(EXCEPTIONTAG, "IO1");
+            Log.d(Constant.EXCEPTIONTAG, "IO1");
         } finally {
             try {
                 if (is != null) is.close();
             } catch (IOException e2) {
-                Log.d(EXCEPTIONTAG, "IO2");
+                Log.d(Constant.EXCEPTIONTAG, "IO2");
             }
         }
         return result;

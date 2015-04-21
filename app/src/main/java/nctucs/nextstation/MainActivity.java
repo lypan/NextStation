@@ -1,27 +1,38 @@
 package nctucs.nextstation;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.GridView;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends ActionBarActivity {
-    Button publicTransportationReference;
+    ArrayList<String> categoryArray = new ArrayList<>();
+    GridView locationCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        locationCategory = (GridView)findViewById(R.id.locationCategory);
 
+        categoryArray.add("Public\nTransportation");
+        categoryArray.add("Custum\nPlace");
+        categoryArray.add("test3");
+        categoryArray.add("test4");
+        categoryArray.add("test5");
 
-        publicTransportationReference = (Button) findViewById(R.id.PublicTransportationButton);
-        publicTransportationReference.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        LocationCategoryAdapter categoryAdapter = new LocationCategoryAdapter(this, R.layout.grid_item, categoryArray);
+        locationCategory.setNumColumns(2);
+        locationCategory.setAdapter(categoryAdapter);
+
+//        publicTransportationReference = (Button) findViewById(R.id.PublicTransportationButton);
+//        publicTransportationReference.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
 //                Intent publicTransportationActivity = new Intent();
 
 
@@ -41,38 +52,11 @@ public class MainActivity extends ActionBarActivity {
 //                catch (IOException e) {
 //
 //                }
-                Intent startPublicTransportaion = new Intent(view.getContext(), PublicTransportationActivity.class);
-                publicTransportationReference.setText("click");
-                startActivity(startPublicTransportaion);
-            }
-        });
-
-//        InputStream ins = getResources().openRawResource(R.raw.test);
-//        BufferedReader reader = new BufferedReader(new InputStreamReader(ins));
-//        StringBuilder out = new StringBuilder();
-//        String line;
-//        try {
-//            line = reader.readLine();
-//        }
-//        catch (IOException e) {
-//            return;
-//        }
-
-//        JSONArray jsonArray = null;
-//        String r = null;
-//        String jsonString = parseJson(R.raw.taipeimrt);
-//        try {
-//            jsonArray = new JSONArray(jsonString);
-//        } catch (JSONException e) {
-//            Log.d(EXCEPTIONTAG, "JSON1");
-//        }
-//        try {
-//            r = jsonArray.getJSONObject(0).getString("name");
-//        } catch (JSONException e) {
-//            Log.d(EXCEPTIONTAG, "JSON2");
-//        }
-//        publicTransportationReference.setText(r);
-
+//                Intent startPublicTransportaion = new Intent(view.getContext(), PublicTransportationActivity.class);
+//                publicTransportationReference.setText("click");
+//                startActivity(startPublicTransportaion);
+//            }
+//        });
     }
 
 
