@@ -43,18 +43,19 @@ public class ListLocationActivity extends ActionBarActivity {
         );
 
 
-        String nameString = cursor.getColumnName(0);
-        String latitudeString = cursor.getColumnName(1);
-        String longitudeString = cursor.getColumnName(2);
+        if (cursor.getCount() != 0) {
+            String nameString = cursor.getColumnName(0);
+            String latitudeString = cursor.getColumnName(1);
+            String longitudeString = cursor.getColumnName(2);
+            cursor.moveToFirst();
+            do {
+                String name = cursor.getString(cursor.getColumnIndex(nameString));
+                String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
+                String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
 
-        cursor.moveToFirst();
-        do {
-            String name = cursor.getString(cursor.getColumnIndex(nameString));
-            String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
-            String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
-
-            locationArray.add(new LocationInformation(name, latitude, longitude));
-        } while (cursor.moveToNext());
+                locationArray.add(new LocationInformation(name, latitude, longitude));
+            } while (cursor.moveToNext());
+        }
         dbr.close();
 
         ListArrayAdapter locationAdapter = new ListArrayAdapter(this, R.layout.list_item, locationArray);

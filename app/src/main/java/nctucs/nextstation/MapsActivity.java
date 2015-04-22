@@ -37,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements
     Location mLastLocation;
     LatLng mLatLng;
     UserDatabaseHelper mDbHelper;
+
     //    private LocationRequest locationRequest;
 //    private Location currentLocation;
 //    private Marker currentMarker, itemMarker;
@@ -104,12 +105,19 @@ public class MapsActivity extends FragmentActivity implements
                 alertDialogBuilder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        marker.remove();
                         String name = marker.getTitle();
+                        if (name.equals("NCTU")) {
+                            String text = "Cannot delete NCTU!";
+                            int duration = Toast.LENGTH_SHORT;
+                            Toast toast = Toast.makeText(context, text, duration);
+                            toast.show();
+                        } else {
+                            marker.remove();
+                            SQLiteDatabase dbw = mDbHelper.getWritableDatabase();
+                            int deteleRow = dbw.delete(Constant.TABLE_NAME, Constant.TITLE_NAME + "='" + name + "'", null);
+                        }
                         mDbHelper = new UserDatabaseHelper(context);
-                        SQLiteDatabase dbw = mDbHelper.getWritableDatabase();
-                        int deteleRow = dbw.delete(Constant.TABLE_NAME, Constant.TITLE_NAME + "='" + name + "'", null);
-//                        Log.d(Constant.TEST_TAG,marker.getTitle());
+
                     }
                 });
                 alertDialogBuilder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
@@ -237,21 +245,23 @@ public class MapsActivity extends FragmentActivity implements
                 null                                 // The sort order
         );
 
-        String nameString = cursor.getColumnName(0);
-        String latitudeString = cursor.getColumnName(1);
-        String longitudeString = cursor.getColumnName(2);
+        if (cursor.getCount() != 0) {
+            String nameString = cursor.getColumnName(0);
+            String latitudeString = cursor.getColumnName(1);
+            String longitudeString = cursor.getColumnName(2);
 
-        cursor.moveToFirst();
-        do {
+            cursor.moveToFirst();
+            do {
 //                    Log.d(Constant.TEST_TAG, cursor.getString(cursor.getColumnIndex(Key)));
-            String name = cursor.getString(cursor.getColumnIndex(nameString));
-            String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
-            String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
+                String name = cursor.getString(cursor.getColumnIndex(nameString));
+                String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
+                String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
 
-            LatLng place = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-            addMarker(place, name);
+                LatLng place = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                addMarker(place, name);
 
-        } while (cursor.moveToNext());
+            } while (cursor.moveToNext());
+        }
         dbr.close();
     }
 }

@@ -88,18 +88,21 @@ public class MainActivity extends ActionBarActivity implements
                 null,                                     // don't filter by row groups
                 null                                 // The sort order
         );
-        String nameString = cursor.getColumnName(0);
-        String latitudeString = cursor.getColumnName(1);
-        String longitudeString = cursor.getColumnName(2);
 
-        cursor.moveToFirst();
-        do {
-            String name = cursor.getString(cursor.getColumnIndex(nameString));
-            String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
-            String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
+        if (cursor.getCount() != 0) {
+            String nameString = cursor.getColumnName(0);
+            String latitudeString = cursor.getColumnName(1);
+            String longitudeString = cursor.getColumnName(2);
 
-            mLocationArray.add(new LocationInformation(name, latitude, longitude));
-        } while (cursor.moveToNext());
+            cursor.moveToFirst();
+            do {
+                String name = cursor.getString(cursor.getColumnIndex(nameString));
+                String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
+                String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
+
+                mLocationArray.add(new LocationInformation(name, latitude, longitude));
+            } while (cursor.moveToNext());
+        }
         dbr.close();
 
         for (int i = 0; i < mLocationArray.size(); i++) {
