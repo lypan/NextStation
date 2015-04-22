@@ -26,9 +26,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <!--<meta-data-->
-            <!--android:name="com.google.android.geo.API_KEY"-->
-            <!--android:value="@string/google_maps_key" />-->
+        <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="@string/google_maps_key" /> -->
 
         <activity
             android:name=".MainActivity"
@@ -41,7 +41,7 @@
         </activity>
         <activity
             android:name=".PublicTransportationActivity"
-            android:label="PublicTransportation" >
+            android:label="@string/title_activity_public_transportation" >
         </activity>
 
         <meta-data
@@ -52,7 +52,14 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" >
         </activity>
-
+        <activity
+            android:name=".ListLocationActivity"
+            android:label="@string/title_activity_list_location" >
+        </activity>
+        <activity
+            android:name=".AlarmActivity"
+            android:label="@string/title_activity_alarm" >
+        </activity>
     </application>
 
 </manifest>

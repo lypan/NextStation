@@ -59,6 +59,16 @@ public class LocationCategoryAdapter extends ArrayAdapter<String> {
                     }
                 });
                 break;
+            case "List":
+                gridTextView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d(Constant.TEST_TAG, "List");
+                        Intent intent = new Intent(context, ListLocationActivity.class);
+                        context.startActivity(intent);
+                    }
+                });
+                break;
         }
 
         return itemlayout;

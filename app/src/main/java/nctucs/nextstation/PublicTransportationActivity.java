@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 
 public class PublicTransportationActivity extends ActionBarActivity {
-    private ArrayList<LocationInformation> locationArray = new ArrayList<>();
+    ArrayList<LocationInformation> locationArray = new ArrayList<>();
     ListView listview;
 
     @Override
@@ -53,7 +53,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
                 }
                 LocationArrayAdapter locationAdapter = new LocationArrayAdapter(this, R.layout.list_item, locationArray);
 
-                listview = (ListView) findViewById(R.id.listView);
+                listview = (ListView) findViewById(R.id.listView_publicTransportation);
                 listview.setAdapter(locationAdapter);
             }
         }

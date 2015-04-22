@@ -1,10 +1,15 @@
 <resources>
     <string name="app_name">NextStation</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">到了RRRRR!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_maps">Map</string>
     <string name="add_location_title">Input the location name!</string>
     <string name="add_location_message">Add the location to list?</string>
+    <string name="delete_location_title">Delete the location!</string>
+    <string name="delete_location_message">Are you sure?</string>
     <string name="positive_button">Confirm</string>
     <string name="negative_button">Cancel</string>
+    <string name="title_activity_public_transportation">PublicTransportationActivity</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_list_location">ListLocationActivity</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
 </resources>

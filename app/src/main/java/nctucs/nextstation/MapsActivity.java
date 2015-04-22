@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
@@ -24,17 +25,18 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements
         ConnectionCallbacks, OnConnectionFailedListener {
-    public Context context;
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private GoogleApiClient mGoogleApiClient;
-    private Location mCurrentLocation;
-    private Location mLastLocation;
-    public LatLng mLatLng;
-
+    Context context;
+    GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    GoogleApiClient mGoogleApiClient;
+    Location mCurrentLocation;
+    Location mLastLocation;
+    LatLng mLatLng;
+    UserDatabaseHelper mDbHelper;
     //    private LocationRequest locationRequest;
 //    private Location currentLocation;
 //    private Marker currentMarker, itemMarker;
@@ -60,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-                        UserDatabaseHelper mDbHelper = new UserDatabaseHelper(context);
+                        mDbHelper = new UserDatabaseHelper(context);
                         SQLiteDatabase dbw = mDbHelper.getWritableDatabase();
                         ContentValues values = new ContentValues();
                         values.put(Constant.TITLE_NAME, locationEditText.getText().toString());
@@ -92,12 +94,41 @@ public class MapsActivity extends FragmentActivity implements
                 alertDialog.show();
             }
         });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(final Marker marker) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setTitle(R.string.delete_location_title);
+                alertDialogBuilder.setMessage(R.string.delete_location_message);
+                alertDialogBuilder.setPositiveButton(R.string.positive_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        marker.remove();
+                        String name = marker.getTitle();
+                        mDbHelper = new UserDatabaseHelper(context);
+                        SQLiteDatabase dbw = mDbHelper.getWritableDatabase();
+                        int deteleRow = dbw.delete(Constant.TABLE_NAME, Constant.TITLE_NAME + "='" + name + "'", null);
+//                        Log.d(Constant.TEST_TAG,marker.getTitle());
+                    }
+                });
+                alertDialogBuilder.setNegativeButton(R.string.negative_button, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+                return false;
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        updataMapDisplay();
     }
 
     /**
@@ -124,6 +155,8 @@ public class MapsActivity extends FragmentActivity implements
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
+
+
             }
         }
     }
@@ -183,5 +216,42 @@ public class MapsActivity extends FragmentActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+    }
+
+    private void updataMapDisplay() {
+        mDbHelper = new UserDatabaseHelper(context);
+        SQLiteDatabase dbr = mDbHelper.getReadableDatabase();
+        String[] projection = {
+                Constant.TITLE_NAME,
+                Constant.CONTENT_NAME1,
+                Constant.CONTENT_NAME2
+        };
+//                String sortOrder = " DESC";
+        Cursor cursor = dbr.query(
+                Constant.TABLE_NAME,  // The table to query
+                null,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+
+        String nameString = cursor.getColumnName(0);
+        String latitudeString = cursor.getColumnName(1);
+        String longitudeString = cursor.getColumnName(2);
+
+        cursor.moveToFirst();
+        do {
+//                    Log.d(Constant.TEST_TAG, cursor.getString(cursor.getColumnIndex(Key)));
+            String name = cursor.getString(cursor.getColumnIndex(nameString));
+            String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
+            String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
+
+            LatLng place = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+            addMarker(place, name);
+
+        } while (cursor.moveToNext());
+        dbr.close();
     }
 }

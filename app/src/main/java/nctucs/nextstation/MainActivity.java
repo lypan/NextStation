@@ -1,6 +1,9 @@
 package nctucs.nextstation;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -24,16 +27,16 @@ import java.util.ArrayList;
 
 public class MainActivity extends ActionBarActivity implements
         ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
-    ArrayList<String> categoryArray = new ArrayList<>();
+    ArrayList<String> categoryArray = new ArrayList<String>();
     UserDatabaseHelper mDbHelper = new UserDatabaseHelper(this);
     GridView locationCategory;
-
-    public Context context;
-    private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private GoogleApiClient mGoogleApiClient;
-    private Location mCurrentLocation;
-    private Location mLastLocation;
-    public LatLng mLatLng;
+    ArrayList<LocationInformation> mLocationArray = new ArrayList<>();
+    Context context;
+    GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    GoogleApiClient mGoogleApiClient;
+    Location mCurrentLocation;
+    Location mLastLocation;
+    LatLng mLatLng;
     LocationRequest mLocationRequest;
 
     @Override
@@ -64,8 +67,64 @@ public class MainActivity extends ActionBarActivity implements
         mCurrentLocation = location;
         Log.d(Constant.TEST_TAG, "OnLocationChanged!");
         Log.d(Constant.TEST_TAG, String.valueOf(mCurrentLocation.getLatitude()));
-//        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-//        updateUI();
+        Log.d(Constant.TEST_TAG, String.valueOf(mCurrentLocation.getLongitude()));
+        if (location == null) return;
+
+
+        mDbHelper = new UserDatabaseHelper(context);
+        SQLiteDatabase dbr = mDbHelper.getReadableDatabase();
+        String[] projection = {
+                Constant.TITLE_NAME,
+                Constant.CONTENT_NAME1,
+                Constant.CONTENT_NAME2
+        };
+//                String sortOrder = " DESC";
+        Cursor cursor = dbr.query(
+                Constant.TABLE_NAME,  // The table to query
+                null,                               // The columns to return
+                null,                                // The columns for the WHERE clause
+                null,                            // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                 // The sort order
+        );
+        String nameString = cursor.getColumnName(0);
+        String latitudeString = cursor.getColumnName(1);
+        String longitudeString = cursor.getColumnName(2);
+
+        cursor.moveToFirst();
+        do {
+            String name = cursor.getString(cursor.getColumnIndex(nameString));
+            String latitude = cursor.getString(cursor.getColumnIndex(latitudeString));
+            String longitude = cursor.getString(cursor.getColumnIndex(longitudeString));
+
+            mLocationArray.add(new LocationInformation(name, latitude, longitude));
+        } while (cursor.moveToNext());
+        dbr.close();
+
+        for (int i = 0; i < mLocationArray.size(); i++) {
+            Log.d(Constant.TEST_TAG, mLocationArray.get(i).name);
+
+            Location destination = new Location(location);
+            destination.setLatitude(Double.parseDouble(mLocationArray.get(i).latitude));
+            destination.setLongitude(Double.parseDouble(mLocationArray.get(i).longitude));
+            String name = mLocationArray.get(i).name;
+            double distance = location.distanceTo(destination);
+
+            if (distance < 1000.0) {
+                mDbHelper = new UserDatabaseHelper(context);
+                SQLiteDatabase dbw = mDbHelper.getWritableDatabase();
+                int deteleRow = dbw.delete(Constant.TABLE_NAME, Constant.TITLE_NAME + "='" + name + "'", null);
+                mLocationArray.remove(i);
+                dbw.close();
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, AlarmActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+
+        }
+
     }
 
     private void createLocationRequest() {
@@ -74,9 +133,11 @@ public class MainActivity extends ActionBarActivity implements
         mLocationRequest.setFastestInterval(500);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
+
     private void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
     }
+
     private synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -94,7 +155,7 @@ public class MainActivity extends ActionBarActivity implements
 
         categoryArray.add("Transportation");
         categoryArray.add("Custom");
-        categoryArray.add("Location");
+        categoryArray.add("List");
         categoryArray.add("Category");
 
         LocationCategoryAdapter categoryAdapter = new LocationCategoryAdapter(this, R.layout.grid_item, categoryArray);

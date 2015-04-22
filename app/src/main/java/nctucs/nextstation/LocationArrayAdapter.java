@@ -19,8 +19,8 @@ import java.util.List;
  * Created by liangyupan on 4/21/15.
  */
 public class LocationArrayAdapter extends ArrayAdapter<LocationInformation> {
-    private Context context;
-
+    Context context;
+    UserDatabaseHelper mDbHelper;
     public LocationArrayAdapter(Context context, int resource, List<LocationInformation> objects) {
         super(context, resource, objects);
         this.context = context;
@@ -94,7 +94,7 @@ public class LocationArrayAdapter extends ArrayAdapter<LocationInformation> {
 //                    Log.d(Constant.EXCEPTION_TAG, "L2");
 //                }
 
-                UserDatabaseHelper mDbHelper = new UserDatabaseHelper(context);
+                mDbHelper = new UserDatabaseHelper(context);
                 SQLiteDatabase dbw = mDbHelper.getWritableDatabase();
                 ContentValues values = new ContentValues();
                 values.put(Constant.TITLE_NAME, name);
