@@ -24,7 +24,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
         setContentView(R.layout.activity_public_transportation);
 //        parse json from MRT
         JSONArray jsonArray = null;
-        InputStream is = getResources().openRawResource(R.raw.taipeimrt);
+        InputStream is = getResources().openRawResource(R.raw.hsinchu);
         String jsonString = Auxiliary.parseJson(is);
         try {
             jsonArray = new JSONArray(jsonString);

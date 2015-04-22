@@ -29,9 +29,9 @@ public class AlarmActivity extends Activity {
         } catch (Exception e) {
         }
 
-        Button stopA_btn= (Button) findViewById(R.id.stopA);
+        Button stopA_btn = (Button) findViewById(R.id.stopA);
         stopA_btn.setOnClickListener(stopAlarm);
-}
+    }
 
 
     @Override
@@ -57,18 +57,18 @@ public class AlarmActivity extends Activity {
     }
 
     OnClickListener stopAlarm = new OnClickListener() {
-         public void onClick(View v) {
-             try {
-                 player.stop();
-                 player.prepare();
-             } catch (Exception e) {
-             }
-             finish();
+        public void onClick(View v) {
+            try {
+                player.stop();
+                player.prepare();
+            } catch (Exception e) {
+            }
+            finish();
             //Intent intent = new Intent();
             //intent.setClass(AlarmActivity.this, MainActivity.class);
             //startActivity(intent);
-         }
-     };
+        }
+    };
 
     MediaPlayer.OnCompletionListener comL = new MediaPlayer.OnCompletionListener() {
         @Override
@@ -76,7 +76,7 @@ public class AlarmActivity extends Activity {
             try {
                 player.stop();
                 player.prepare();
-            } catch (Exception e){
+            } catch (Exception e) {
             }
         }
     };

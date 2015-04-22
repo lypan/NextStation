@@ -37,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements
     Location mLastLocation;
     LatLng mLatLng;
     UserDatabaseHelper mDbHelper;
+    Marker mCurrentMarker;
 
     //    private LocationRequest locationRequest;
 //    private Location currentLocation;
@@ -193,7 +194,7 @@ public class MapsActivity extends FragmentActivity implements
 
     private void addMarker(LatLng place, String title) {
         BitmapDescriptor icon =
-                BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher);
+                BitmapDescriptorFactory.fromResource(R.drawable.apache);
 
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(place)

@@ -59,7 +59,6 @@ public class LocationService extends Service
         dest.setLongitude(120.9973135);
 
 
-
         float dist = current.distanceTo(dest);
         if (dist < 100.0) {
             if (isIn == false) {

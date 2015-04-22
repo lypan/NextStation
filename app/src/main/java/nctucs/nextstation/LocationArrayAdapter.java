@@ -21,6 +21,7 @@ import java.util.List;
 public class LocationArrayAdapter extends ArrayAdapter<LocationInformation> {
     Context context;
     UserDatabaseHelper mDbHelper;
+
     public LocationArrayAdapter(Context context, int resource, List<LocationInformation> objects) {
         super(context, resource, objects);
         this.context = context;
