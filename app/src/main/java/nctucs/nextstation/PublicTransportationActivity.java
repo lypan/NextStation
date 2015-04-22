@@ -1,7 +1,7 @@
 package nctucs.nextstation;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,10 +10,7 @@ import android.widget.ListView;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
@@ -25,22 +22,21 @@ public class PublicTransportationActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_public_transportation);
-
 //        parse json from MRT
         JSONArray jsonArray = null;
-        String jsonString = parseJson(R.raw.taipeimrt);
+        InputStream is = getResources().openRawResource(R.raw.taipeimrt);
+        String jsonString = Auxiliary.parseJson(is);
         try {
             jsonArray = new JSONArray(jsonString);
         } catch (JSONException e) {
-            Log.d(Constant.EXCEPTIONTAG, "JSON1");
+            Log.d(Constant.EXCEPTION_TAG, "JSON1");
         }
-
 //        fill the list view
         int dataLength = 0;
         try {
             dataLength = jsonArray.length();
         } catch (NullPointerException e) {
-            Log.d(Constant.EXCEPTIONTAG, "JSON2");
+            Log.d(Constant.EXCEPTION_TAG, "JSON2");
         } finally {
             if (dataLength != 0) {
                 for (int i = 0; i < dataLength; i++) {
@@ -51,7 +47,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
                         longitude = jsonArray.getJSONObject(i).getString("longitude");
                         Log.d("test", name);
                     } catch (JSONException e) {
-                        Log.d(Constant.EXCEPTIONTAG, "JSON2");
+                        Log.d(Constant.EXCEPTION_TAG, "JSON2");
                     }
                     locationArray.add(new LocationInformation(name, latitude, longitude));
                 }
@@ -62,9 +58,7 @@ public class PublicTransportationActivity extends ActionBarActivity {
             }
         }
 
-
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -87,31 +81,4 @@ public class PublicTransportationActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    public String parseJson(int resourceID) {
-        InputStream is = null;
-        String result = null;
-        try {
-            is = getResources().openRawResource(resourceID);
-            // json is UTF-8 by default
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"), 8);
-            StringBuilder sb = new StringBuilder();
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            result = sb.toString();
-        } catch (IOException e1) {
-            Log.d(Constant.EXCEPTIONTAG, "IO1");
-        } finally {
-            try {
-                if (is != null) is.close();
-            } catch (IOException e2) {
-                Log.d(Constant.EXCEPTIONTAG, "IO2");
-            }
-        }
-        return result;
-    }
-
 }

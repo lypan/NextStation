@@ -7,6 +7,7 @@ public class LocationInformation {
     public String name;
     public String latitude;
     public String longitude;
+
     public LocationInformation(String name, String latitude, String longitude) {
         this.name = name;
         this.latitude = latitude;
